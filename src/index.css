@@ -1,0 +1,59 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.Logo {
+  background-image: url(./images/home.jpeg);
+  background-size: cover;
+  padding: 10px 10px 150px;
+}
+
+.LogoPopcorn {
+  background-image: url(./images/popcorn.jpg);
+  background-size: cover;
+  padding: 10px 10px 150px;
+}
+
+
+.LogoLogin {
+  background-image: url(./images/login.jpeg);
+  background-size: cover;
+  padding: 10px 10px 150px;
+}
+
+.LogoHome {
+  background-image: url(./images/snap.jpeg);
+  background-size: cover;
+  padding: 10px 10px 150px;
+}
+
+button.icon-white {
+  color: white;
+}
+
+input[type="text"]:not(.browser-default):focus:not([readonly]),
+input[type="email"]:not(.browser-default):focus:not([readonly]),
+input[type="password"]:not(.browser-default):focus:not([readonly]),
+textarea.materialize-textarea:focus:not([readonly]) {
+  border-color: blue;
+  box-shadow: none;
+}
+
+
+.cars {
+  flex: 33.33%;
+  padding: 5px;
+}
+
+.section {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media screen and (max-width: 500px) {
+  .cars {
+    width: 100%;
+  }
+}
