@@ -29,8 +29,8 @@ body {
   padding: 10px 10px 150px;
 }
 
-button.icon-white {
-  color: white;
+.icon-white {
+  color: red;
 }
 
 input[type="text"]:not(.browser-default):focus:not([readonly]),

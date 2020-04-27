@@ -1,16 +1,9 @@
 import React from "react";
 
-const MapPins = ({car, showInfo}) => {
+const MapPins = ({lat, long}) => {
   return (
     <div>
-      <button
-        onClick={() => {
-          showInfo(car);
-        }}
-        className="material-icons waves-effect waves-teal btn-flat btn-tiny icon-white"
-      >
-        directions_car
-      </button>
+      <i className="material-icons icon-white">location_on</i>
     </div>
   );
 };
