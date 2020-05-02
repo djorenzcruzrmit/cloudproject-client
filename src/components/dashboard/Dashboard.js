@@ -4,7 +4,8 @@ import {Redirect} from "react-router-dom";
 import {firestoreConnect} from "react-redux-firebase";
 import {compose} from "redux";
 import Map from "../map/Map";
-import MapPins from "../map/MapPins";
+import MovieDetails from "../movies/MovieDetails";
+import LocationDetails from "../locations/LocationDetails";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -12,6 +13,8 @@ class Dashboard extends Component {
     this.state = {
       lat: null,
       lng: null,
+      movie: "",
+      movieLocation: "",
     };
     this.getLocation = this.getLocation.bind(this);
     this.getPosition = this.getPosition.bind(this);
@@ -28,25 +31,58 @@ class Dashboard extends Component {
     });
   }
 
+  setMovie = (movie) => {
+    this.setState({movie});
+  };
+
+  setMovieLocation = (locations) => {
+    this.setState({movieLocation: locations});
+  };
+
   render() {
-    const {auth} = this.props;
+    const {auth, profile, locations, movies} = this.props;
     if (!auth.uid) return <Redirect to="/signin" />;
     console.log(this.state);
     return (
       <div className="LogoPopcorn">
-        <div className="container" style={{paddingTop: 40}}>
-          <h2 className="">Dashboard</h2>
-
-          <button onClick={this.getLocation}>Get Current Location</button>
-          <h6>Please search a movie below:</h6>
-          <br></br>
-          <Map state={this.state} />
-          <br></br>
-          <br></br>
-          <br></br>
-          <br></br>
-          <br></br>
+        <div className="container" style={{opacity: 0.97}}>
+          <h2>Dashboard</h2>
+          <h5>Hello {profile.userName}</h5>
+          <button onClick={this.getLocation} className="btn-large red">
+            Get Current Location
+          </button>
+          <br></br>{" "}
         </div>
+        <div className="row container grey lighten-2" style={{opacity: 0.9}}>
+          <h2>Now Showing</h2>
+          <div className="container">
+            <div className="container">
+              <MovieDetails movies={movies} setMovie={this.setMovie} />
+            </div>{" "}
+          </div>
+        </div>
+
+        <div className="row container grey lighten-2" style={{opacity: 0.9}}>
+          <h2>Available Locations</h2>
+          <div className="container">
+            <div className="col s5 offset-s1">
+              <LocationDetails
+                locations={locations}
+                movie={this.state.movie}
+                setMovieLocation={this.setMovieLocation}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="container">
+          <Map state={this.state} />
+        </div>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
       </div>
     );
   }
@@ -55,10 +91,14 @@ class Dashboard extends Component {
 const mapStateToProps = (state) => {
   return {
     auth: state.firebase.auth,
+    movies: state.firestore.ordered.Movies,
+    locations: state.firestore.ordered.Locations,
+    profile: state.firebase.profile,
   };
 };
 
 export default compose(
-  firestoreConnect(() => ["Users"]),
+  firestoreConnect(() => ["Movies"]),
+  firestoreConnect(() => ["Locations"]),
   connect(mapStateToProps)
 )(Dashboard);

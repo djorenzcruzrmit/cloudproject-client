@@ -8,43 +8,62 @@ import rootReducer from "./store/reducers/rootReducer";
 import {Provider} from "react-redux";
 import thunk from "redux-thunk";
 import {
-  reduxFirestore,
-  getFirestore,
   createFirestoreInstance,
+  getFirestore,
+  reduxFirestore,
 } from "redux-firestore";
 import {ReactReduxFirebaseProvider, getFirebase} from "react-redux-firebase";
 import fbConfig from "./config/fbConfig";
 import firebase from "firebase/app";
-import "firebase/firestore";
+
+//for render on auth ready
+import {useSelector} from "react-redux";
+import {isLoaded} from "react-redux-firebase";
 
 const store = createStore(
   rootReducer,
   compose(
-    applyMiddleware(thunk.withExtraArgument({getFirebase, getFirestore})),
-    reduxFirestore(firebase, fbConfig, {
-      useFirestoreForProfile: true,
-      userProfile: "users",
-    }) // redux bindings for firestore
+    applyMiddleware(thunk.withExtraArgument({getFirestore, getFirebase})),
+    reduxFirestore(firebase, fbConfig)
   )
 );
+
+const profileSpecificProps = {
+  userProfile: "Users",
+  useFirestoreForProfile: true,
+  enableRedirectHandling: false,
+  resetBeforeLogin: false,
+};
 
 const rrfProps = {
   firebase,
   config: fbConfig,
+  config: profileSpecificProps,
   dispatch: store.dispatch,
   createFirestoreInstance,
 };
 
+function AuthIsLoaded({children}) {
+  const auth = useSelector((state) => state.firebase.auth);
+  if (!isLoaded(auth))
+    return (
+      <div className="center">
+        {" "}
+        <p>Loading Reem...</p>
+      </div>
+    );
+  return children;
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <ReactReduxFirebaseProvider {...rrfProps}>
-      <App />
+      <AuthIsLoaded>
+        <App />
+      </AuthIsLoaded>
     </ReactReduxFirebaseProvider>
   </Provider>,
   document.getElementById("root")
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
