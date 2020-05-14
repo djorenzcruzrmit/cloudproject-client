@@ -49,7 +49,7 @@ function AuthIsLoaded({children}) {
     return (
       <div className="center">
         {" "}
-        <p>Loading Reem...</p>
+        <p>Loading Cloud Movie Finder...</p>
       </div>
     );
   return children;

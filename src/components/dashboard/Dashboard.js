@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router-dom";
-import {firestoreConnect} from "react-redux-firebase";
+import {firestoreConnect, firebaseConnect} from "react-redux-firebase";
 import {compose} from "redux";
 import Map from "../map/Map";
 import MovieDetails from "../movies/MovieDetails";
@@ -33,6 +33,7 @@ class Dashboard extends Component {
 
   setMovie = (movie) => {
     this.setState({movie});
+    this.getLocation();
   };
 
   setMovieLocation = (locations) => {
@@ -40,44 +41,33 @@ class Dashboard extends Component {
   };
 
   render() {
-    const {auth, profile, locations, movies} = this.props;
+    const {auth, profile, locations, movies, poster} = this.props;
     if (!auth.uid) return <Redirect to="/signin" />;
-    console.log(this.state);
     return (
       <div className="LogoPopcorn">
-        <div className="container" style={{opacity: 0.97}}>
-          <h2>Dashboard</h2>
-          <h5>Hello {profile.userName}</h5>
-          <button onClick={this.getLocation} className="btn-large red">
-            Get Current Location
-          </button>
-          <br></br>{" "}
-        </div>
-        <div className="row container grey lighten-2" style={{opacity: 0.9}}>
+        <div className="container grey lighten-2" style={{opacity: 0.9}}>
           <h2>Now Showing</h2>
-          <div className="container">
-            <div className="container">
-              <MovieDetails movies={movies} setMovie={this.setMovie} />
-            </div>{" "}
+          <div className="row">
+            <MovieDetails movies={movies} setMovie={this.setMovie} />
           </div>
         </div>
 
-        <div className="row container grey lighten-2" style={{opacity: 0.9}}>
+        <div className="container grey lighten-2" style={{opacity: 0.9}}>
           <h2>Available Locations</h2>
-          <div className="container">
-            <div className="col s5 offset-s1">
-              <LocationDetails
-                locations={locations}
-                movie={this.state.movie}
-                setMovieLocation={this.setMovieLocation}
-              />
-            </div>
+          <div className="row container">
+            <LocationDetails
+              locations={locations}
+              movie={this.state.movie}
+              setMovieLocation={this.setMovieLocation}
+            />
           </div>
         </div>
+        {this.state.movieLocation !== "" ? (
+          <div className="container">
+            <Map state={this.state} />
+          </div>
+        ) : null}
 
-        <div className="container">
-          <Map state={this.state} />
-        </div>
         <br></br>
         <br></br>
         <br></br>
@@ -94,11 +84,13 @@ const mapStateToProps = (state) => {
     movies: state.firestore.ordered.Movies,
     locations: state.firestore.ordered.Locations,
     profile: state.firebase.profile,
+    poster: state.firestore,
   };
 };
 
 export default compose(
   firestoreConnect(() => ["Movies"]),
   firestoreConnect(() => ["Locations"]),
+  firestoreConnect(["Posters"]),
   connect(mapStateToProps)
 )(Dashboard);

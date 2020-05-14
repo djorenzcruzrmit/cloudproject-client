@@ -35,8 +35,8 @@ export default function Home() {
           <h5 className="col offset-s2">Watch a move in three easy steps: </h5>
           <div className="col offset-s2">
             <h5>
-              <i class="material-icons small"> looks_one</i> Create an account
-              with us
+              <i className="material-icons small"> looks_one</i> Create an
+              account with us
             </h5>
           </div>
           <div className="col offset-s2">

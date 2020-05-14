@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import GoogleMapReact from "google-map-react";
+import GoogleMapReact, {Polyline} from "google-map-react";
 import mapStyles from "./MapStyle";
 import MapPins from "./MapPins";
 
@@ -9,14 +9,37 @@ export default class Map extends Component {
       lat: -37.808563,
       lng: 144.963339,
     },
-    zoom: 15,
+    startLocation: {
+      lat: null,
+      lng: null,
+    },
+    endLocation: {
+      lat: null,
+      lng: null,
+    },
+    zoom: 11,
   };
 
   render() {
     if (this.props.state.lat != null) {
-      this.props.center.lat = this.props.state.lat;
-      this.props.center.lng = this.props.state.lng;
+      this.props.startLocation.lat = this.props.state.lat;
+      this.props.startLocation.lng = this.props.state.lng;
     }
+
+    if (this.props.state.movieLocation.Location.latitude != null) {
+      this.props.endLocation.lat = this.props.state.movieLocation.Location.latitude;
+      this.props.endLocation.lng = this.props.state.movieLocation.Location.longitude;
+      this.props.center.lat =
+        (this.props.state.lat +
+          this.props.state.movieLocation.Location.latitude) /
+        2;
+      this.props.center.lng =
+        (this.props.state.lng +
+          this.props.state.movieLocation.Location.longitude) /
+        2;
+    }
+
+    console.log(this.props.state);
 
     return (
       <div className="row">
@@ -28,9 +51,21 @@ export default class Map extends Component {
               defaultZoom={this.props.zoom}
               options={{styles: mapStyles}}
               yesIWantToUseGoogleMapApiInternals
-              //onGoogleApiLoaded={({map, maps}) => apiIsLoaded(map, maps)}
+              onGoogleApiLoaded={({map, maps}) =>
+                apiIsLoaded(
+                  map,
+                  maps,
+                  this.props.startLocation,
+                  this.props.endLocation
+                )
+              }
             >
               <MapPins lat={this.props.state.lat} lng={this.props.state.lng} />
+              <MapPins
+                lat={this.props.endLocation.lat}
+                lng={this.props.endLocation.lng}
+                icon={"movie"}
+              />
             </GoogleMapReact>
           ) : null}
         </div>
@@ -39,20 +74,30 @@ export default class Map extends Component {
   }
 }
 
-const apiIsLoaded = (map, maps) => {
+const apiIsLoaded = (map, maps, start, end) => {
   if (map) {
     const directionsService = new maps.DirectionsService();
     const directionsDisplay = new maps.DirectionsRenderer();
-    const polyLine = new maps.Polyline();
+    console.log("start", start);
+    console.log("end", end);
+
     directionsService.route(
       {
-        origin: "-37.865032, 144.658564",
-        destination: "-37.875119, 144.680511",
+        origin: start,
+        destination: end,
         travelMode: "DRIVING",
       },
       (response, status) => {
-        console.log("response:" + response);
-        console.log("status" + status);
+        const polyLine = new maps.Polyline({
+          path: response.routes[0].overview_path,
+          geodesic: true,
+          strokeColor: "#00a1e1",
+          strokeOpacity: 1.0,
+          strokeWeight: 4,
+        });
+        polyLine.setMap(map);
+        console.log(response.routes[0].overview_path);
+
         if (status === "OK") {
           directionsDisplay.setDirections(response);
           console.log(response.routes);

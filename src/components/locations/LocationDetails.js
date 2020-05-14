@@ -2,21 +2,31 @@ import React, {Component} from "react";
 
 export default function LocationDetails({locations, movie, setMovieLocation}) {
   return (
-    <div>
+    <div className="row">
       {locations &&
-        locations.map((locations) => {
-          if (locations.hasOwnProperty(movie.Title)) {
+        locations.map((location) => {
+          const cinema =
+            location.id === "Watergardens" ? "HOYTS" : "Village Cinemas";
+          const poster =
+            cinema == "HOYTS"
+              ? "https://cloud-project2020.s3.amazonaws.com/Cinemas/Hoyts.jpg"
+              : "https://cloud-project2020.s3.amazonaws.com/Cinemas/VillageCinemas.jpg";
+          if (location[movie.Title]) {
             return (
-              <button
-                className="container card red"
-                style={{opacity: 1}}
-                onClick={() => setMovieLocation(locations)}
-              >
-                <div>{locations.id}</div>
-                <div>
-                  {locations.Location.latitude} {locations.Location.longitude}
-                </div>
-              </button>
+              <div className="col s4">
+                <button
+                  className="container card red"
+                  style={{opacity: 1}}
+                  onClick={() => setMovieLocation(location)}
+                >
+                  <img
+                    src={poster}
+                    style={{height: 50, width: 70, paddingTop: 10}}
+                  />
+                  <div>{cinema}</div>
+                  <div>{location.id}</div>
+                </button>
+              </div>
             );
           } else return;
         })}
