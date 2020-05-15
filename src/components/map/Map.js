@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import GoogleMapReact, {Polyline} from "google-map-react";
+import GoogleMapReact from "google-map-react";
 import mapStyles from "./MapStyle";
 import MapPins from "./MapPins";
 
@@ -21,90 +21,89 @@ export default class Map extends Component {
   };
 
   render() {
-    if (this.props.state.lat != null) {
-      this.props.startLocation.lat = this.props.state.lat;
-      this.props.startLocation.lng = this.props.state.lng;
+    const {state, startLocation, endLocation, center} = this.props;
+
+    // checks for valie user lattitude and movie location latitude
+    if (state.lat != null && state.movieLocation.Location.latitude != null) {
+      // assign start location as user's location
+      startLocation.lat = state.lat;
+      startLocation.lng = state.lng;
+      // assigns end location as cinema's location
+      endLocation.lat = state.movieLocation.Location.latitude;
+      endLocation.lng = state.movieLocation.Location.longitude;
+      // getting the middle of the map for rendering
+      center.lat = (state.lat + state.movieLocation.Location.latitude) / 2;
+      center.lng = (state.lng + state.movieLocation.Location.longitude) / 2;
     }
 
-    if (this.props.state.movieLocation.Location.latitude != null) {
-      this.props.endLocation.lat = this.props.state.movieLocation.Location.latitude;
-      this.props.endLocation.lng = this.props.state.movieLocation.Location.longitude;
-      this.props.center.lat =
-        (this.props.state.lat +
-          this.props.state.movieLocation.Location.latitude) /
-        2;
-      this.props.center.lng =
-        (this.props.state.lng +
-          this.props.state.movieLocation.Location.longitude) /
-        2;
+    // function to render polyline and show trip information
+    function apiIsLoaded(map, maps, user, cinema) {
+      if (map) {
+        const directionsService = new maps.DirectionsService();
+        directionsService.route(
+          {
+            origin: user,
+            destination: cinema,
+            travelMode: "DRIVING",
+          },
+          (response, status) => {
+            // draws polyline
+            const polyLine = new maps.Polyline({
+              path: response.routes[0].overview_path,
+              geodesic: true,
+              strokeColor: "#00a1e1",
+              strokeOpacity: 1.0,
+              strokeWeight: 5,
+            });
+            polyLine.setMap(map);
+
+            if (status === "OK") {
+              // shows user the time and distance to cinema
+              var travelTime = response.routes[0].legs[0].duration.text;
+              var distance = response.routes[0].legs[0].distance.text;
+              window.alert(
+                "Coud Movie Finder:\nDistance from your location to the chosen cinema is " +
+                  distance +
+                  "s\nThis will approximately take " +
+                  travelTime +
+                  " by car"
+              );
+            } else {
+              window.alert("Directions request failed due to " + status);
+            }
+          }
+        );
+      }
     }
 
-    console.log(this.props.state);
-
+    // returns map, pins and polyline to render on screen
     return (
-      <div className="row">
+      <div className="row grey lighten-2">
+        <h1>Map</h1>
         <div style={{height: "60vh", width: "100%"}}>
-          {this.props.state.lat != null ? (
-            <GoogleMapReact
-              bootstrapURLKeys={{key: process.env.REACT_APP_MAP_KEY}}
-              defaultCenter={this.props.center}
-              defaultZoom={this.props.zoom}
-              options={{styles: mapStyles}}
-              yesIWantToUseGoogleMapApiInternals
-              onGoogleApiLoaded={({map, maps}) =>
-                apiIsLoaded(
-                  map,
-                  maps,
-                  this.props.startLocation,
-                  this.props.endLocation
-                )
-              }
-            >
-              <MapPins lat={this.props.state.lat} lng={this.props.state.lng} />
-              <MapPins
-                lat={this.props.endLocation.lat}
-                lng={this.props.endLocation.lng}
-                icon={"movie"}
-              />
-            </GoogleMapReact>
-          ) : null}
+          <GoogleMapReact
+            bootstrapURLKeys={{key: process.env.REACT_APP_MAP_KEY}}
+            defaultCenter={center}
+            defaultZoom={this.props.zoom}
+            options={{styles: mapStyles}}
+            yesIWantToUseGoogleMapApiInternals
+            onGoogleApiLoaded={({map, maps}) =>
+              apiIsLoaded(map, maps, startLocation, endLocation)
+            }
+          >
+            <MapPins
+              lat={this.props.state.lat}
+              lng={this.props.state.lng}
+              icon={"pin"}
+            />
+            <MapPins
+              lat={endLocation.lat}
+              lng={endLocation.lng}
+              icon={"movie"}
+            />
+          </GoogleMapReact>
         </div>
       </div>
     );
   }
 }
-
-const apiIsLoaded = (map, maps, start, end) => {
-  if (map) {
-    const directionsService = new maps.DirectionsService();
-    const directionsDisplay = new maps.DirectionsRenderer();
-    console.log("start", start);
-    console.log("end", end);
-
-    directionsService.route(
-      {
-        origin: start,
-        destination: end,
-        travelMode: "DRIVING",
-      },
-      (response, status) => {
-        const polyLine = new maps.Polyline({
-          path: response.routes[0].overview_path,
-          geodesic: true,
-          strokeColor: "#00a1e1",
-          strokeOpacity: 1.0,
-          strokeWeight: 4,
-        });
-        polyLine.setMap(map);
-        console.log(response.routes[0].overview_path);
-
-        if (status === "OK") {
-          directionsDisplay.setDirections(response);
-          console.log(response.routes);
-        } else {
-          window.alert("Directions request failed due to " + status);
-        }
-      }
-    );
-  }
-};
