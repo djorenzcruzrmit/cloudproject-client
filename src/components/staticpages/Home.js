@@ -23,7 +23,7 @@ export default function Home() {
       <div className="container">
         <br></br>
         <div className="divider"></div>
-        <h1 className="center">Cloud x Movies</h1>
+        <h1 className="center">Cloud Movie Finder</h1>
         <h5 className="center">
           Your one stop shop to find currently showing movies around your
           neighbourhood.
@@ -33,10 +33,10 @@ export default function Home() {
         </h5>
         <div className="row" style={{paddingTop: 40}}>
           <h5 className="col offset-s2">Watch a move in three easy steps: </h5>
-          <div className="col offset-s2">
+          <div className="col s8 offset-s2">
             <h5>
               <i className="material-icons small"> looks_one</i> Create an
-              account with us
+              account
             </h5>
           </div>
           <div className="col offset-s2">
@@ -51,7 +51,7 @@ export default function Home() {
             </h5>
           </div>
         </div>
-        <h5 className="col offset-s2" style={{paddingTop: 40}}>
+        <h5 className="col offset-s2 center-align" style={{paddingTop: 40}}>
           We will direct you using the fastest route to your local cinemas and
           you'll be watching your movie in no time!
         </h5>

@@ -16,7 +16,7 @@ const Navbar = (props) => {
     return (
       <div className="container">
         <a href="/" className="brand-logo" style={navStyle}>
-          FINDMOVIES
+          CMFinder
         </a>
         <a
           href="#"

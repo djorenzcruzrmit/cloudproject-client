@@ -51,7 +51,7 @@ export default class Map extends Component {
             const polyLine = new maps.Polyline({
               path: response.routes[0].overview_path,
               geodesic: true,
-              strokeColor: "#00a1e1",
+              strokeColor: "#369fca",
               strokeOpacity: 1.0,
               strokeWeight: 5,
             });
@@ -79,7 +79,7 @@ export default class Map extends Component {
     // returns map, pins and polyline to render on screen
     return (
       <div className="row grey lighten-2">
-        <h1>Map</h1>
+        <h2>Map</h2>
         <div style={{height: "60vh", width: "100%"}}>
           <GoogleMapReact
             bootstrapURLKeys={{key: process.env.REACT_APP_MAP_KEY}}

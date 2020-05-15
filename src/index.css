@@ -14,6 +14,7 @@ body {
   background-image: url(./images/popcorn.jpg);
   background-size: cover;
   padding: 10px 10px 150px;
+  background-attachment: fixed;
 }
 
 
@@ -21,12 +22,14 @@ body {
   background-image: url(./images/login.jpeg);
   background-size: cover;
   padding: 10px 10px 150px;
+  background-attachment: fixed;
 }
 
 .LogoHome {
   background-image: url(./images/snap.jpeg);
   background-size: cover;
   padding: 10px 10px 150px;
+  background-attachment: fixed;
 }
 
 .icon-white {
