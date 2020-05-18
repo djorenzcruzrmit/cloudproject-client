@@ -78,8 +78,7 @@ export default class Map extends Component {
 
     // returns map, pins and polyline to render on screen
     return (
-      <div className="row grey lighten-2">
-        <h2>Map</h2>
+      <div className="row">
         <div style={{height: "60vh", width: "100%"}}>
           <GoogleMapReact
             bootstrapURLKeys={{key: process.env.REACT_APP_MAP_KEY}}

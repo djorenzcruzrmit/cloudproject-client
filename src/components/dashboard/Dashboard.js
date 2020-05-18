@@ -18,10 +18,11 @@ class Dashboard extends Component {
     };
     this.getLocation = this.getLocation.bind(this);
     this.getPosition = this.getPosition.bind(this);
+    this.getError = this.getError.bind(this);
   }
 
   getLocation() {
-    navigator.geolocation.getCurrentPosition(this.getPosition);
+    navigator.geolocation.getCurrentPosition(this.getPosition, this.getError);
   }
 
   getPosition(position) {
@@ -29,6 +30,16 @@ class Dashboard extends Component {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
     });
+  }
+
+  getError(error) {
+    if (error.PERMISSION_DENIED) {
+      window.alert("Please give your browser location access.");
+    } else if (error.POSITION_UNAVAILABLE) {
+      window.alert("Location information is unavailable.");
+    } else {
+      window.alert("An unknown error occurred.");
+    }
   }
 
   setMovie = (movie) => {
@@ -46,14 +57,21 @@ class Dashboard extends Component {
     return (
       <div className="LogoPopcorn">
         <div className="container grey lighten-2" style={{opacity: 0.9}}>
-          <h2>Now Showing</h2>
+          <h2 className="center-align" style={topPad}>
+            Now Showing
+          </h2>
+          <h5 className="center-align">
+            Please choose a movie you would like to watch:
+          </h5>
           <div className="row">
             <MovieDetails movies={movies} setMovie={this.setMovie} />
           </div>
         </div>
 
         <div className="container grey lighten-2" style={{opacity: 0.9}}>
-          <h2>Available Locations</h2>
+          <h2 className="center-align" style={topPad}>
+            Available Locations
+          </h2>
           <div className="row container">
             <LocationDetails
               locations={locations}
@@ -63,7 +81,10 @@ class Dashboard extends Component {
           </div>
         </div>
         {this.state.movieLocation !== "" ? (
-          <div className="container">
+          <div className="container grey lighten-2">
+            <h2 className="center-align" style={topPad}>
+              Directions
+            </h2>
             <Map state={this.state} />
           </div>
         ) : null}
@@ -77,6 +98,10 @@ class Dashboard extends Component {
     );
   }
 }
+
+const topPad = {
+  paddingTop: 20,
+};
 
 const mapStateToProps = (state) => {
   return {
