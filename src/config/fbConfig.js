@@ -4,13 +4,13 @@ import "firebase/auth";
 
 var firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: "cmfinder-22505.firebaseapp.com",
-  databaseURL: "https://cmfinder-22505.firebaseio.com",
-  projectId: "cmfinder-22505",
-  storageBucket: "cmfinder-22505.appspot.com",
-  messagingSenderId: "372280008063",
-  appId: "1:372280008063:web:2b640b31a9562554b24e4a",
-  measurementId: "G-NMX9KLM84Z",
+  authDomain: "cloudmoviefinder.firebaseapp.com",
+  databaseURL: "https://cloudmoviefinder.firebaseio.com",
+  projectId: "cloudmoviefinder",
+  storageBucket: "cloudmoviefinder.appspot.com",
+  messagingSenderId: "198662252374",
+  appId: "1:198662252374:web:e757df535640bd2a2a58f7",
+  measurementId: "G-CMZBTGZZVD",
 };
 // Initialize Firebase
 
